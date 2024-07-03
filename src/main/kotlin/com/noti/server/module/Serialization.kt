@@ -1,4 +1,4 @@
-package com.noti.server.plugins
+package com.noti.server.module
 
 import com.fasterxml.jackson.databind.*
 import io.ktor.serialization.jackson.*

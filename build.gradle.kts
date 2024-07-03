@@ -44,6 +44,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.4.14")
     implementation("com.mysql:mysql-connector-j:8.4.0")
     implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
 
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")

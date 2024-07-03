@@ -1,9 +1,8 @@
-package com.noti.server.plugins
+package com.noti.server.module
 
 import io.ktor.server.application.*
 import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.defaultheaders.*
-import io.ktor.server.response.*
 
 fun Application.configureHTTP() {
     install(Compression) {
@@ -16,6 +15,7 @@ fun Application.configureHTTP() {
         }
     }
     install(DefaultHeaders) {
-        header("X-Engine", "Ktor") // will send this header with each response
+        header("X-Engine", "Nginx")
+        header("Content-Type", "application/json")
     }
 }

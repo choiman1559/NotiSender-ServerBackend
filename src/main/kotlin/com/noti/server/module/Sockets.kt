@@ -1,4 +1,4 @@
-package com.noti.server.plugins
+package com.noti.server.module
 
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*

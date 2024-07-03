@@ -1,7 +1,6 @@
 package com.noti.server
 
-import com.asuscomm.cuj1559.plugins.*
-import com.noti.server.plugins.configureRouting
+import com.noti.server.module.configureRouting
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*

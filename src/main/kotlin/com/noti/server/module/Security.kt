@@ -1,4 +1,4 @@
-package com.noti.server.plugins
+package com.noti.server.module
 
 //import com.kborowy.authprovider.firebase.firebase
 import io.ktor.client.*
@@ -9,7 +9,6 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import java.io.File
 
 fun Application.configureSecurity() {
     authentication {
