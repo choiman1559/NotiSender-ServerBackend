@@ -2,8 +2,7 @@ package com.noti.server
 
 import com.noti.server.process.Argument
 import com.noti.server.module.*
-import com.noti.server.process.Service.configureServiceInstance
-import com.noti.server.process.service.linoti.LiveNotification
+import com.noti.server.process.Service.*
 
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -18,11 +17,11 @@ fun main(args: Array<String>) {
     val server = embeddedServer(Netty, port = argObj.port, host = argObj.host, module = Application::module)
         .start(wait = false)
     Runtime.getRuntime().addShutdownHook(Thread {
-        LiveNotification.stopTimeoutWatchThread()
+        onServiceDead()
         server.stop(1, 5, TimeUnit.SECONDS)
     })
 
-    LiveNotification.startTimeoutWatchThread()
+    onServiceAlive()
     Thread.currentThread().join()
 }
 

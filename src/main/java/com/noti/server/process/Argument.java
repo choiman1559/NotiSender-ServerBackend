@@ -12,6 +12,7 @@ import java.util.Properties;
 public class Argument {
     public int port;
     public boolean isDebug;
+    public boolean useAuthentication;
     public String host;
     public String matchVersion;
 

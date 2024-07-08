@@ -1,12 +1,19 @@
 package com.noti.server.process;
 
 import com.noti.server.process.packet.Packet;
+import com.noti.server.process.service.ImgCacheService;
+import com.noti.server.process.service.LiveNotificationService;
+import com.noti.server.process.service.model.ShortTermModel;
+
 import io.ktor.http.HttpStatusCode;
 import io.ktor.server.application.ApplicationCall;
+
+import java.util.HashMap;
 
 public class Service {
     private static Service instance;
     private final Argument argument;
+    private final HashMap<String, ShortTermModel> shortTermDataList;
 
     public interface onPacketProcessReplyReceiver {
         void onPacketReply(ApplicationCall call, HttpStatusCode code, String data);
@@ -15,6 +22,19 @@ public class Service {
 
     private Service(Argument argument) {
         this.argument = argument;
+        this.shortTermDataList = new HashMap<>();
+
+        try {
+            addShortTermService(ImgCacheService.class);
+            addShortTermService(LiveNotificationService.class);
+        } catch (Exception e) {
+            //ignore exception
+        }
+    }
+
+    private void addShortTermService(Class<?> cls) throws Exception {
+        ShortTermModel shortTermObj = (ShortTermModel) cls.getDeclaredConstructor().newInstance();
+        this.shortTermDataList.put(shortTermObj.getActionTypeName(), shortTermObj);
     }
 
     public static void replyPacket(ApplicationCall call, Packet data) {
@@ -28,6 +48,22 @@ public class Service {
         instance = new Service(argument);
     }
 
+    public static void onServiceAlive() {
+        Service service = Service.getInstance();
+        for(String key : service.shortTermDataList.keySet()) {
+            ShortTermModel shortTermTransfer = service.shortTermDataList.get(key);
+            shortTermTransfer.getShortTermProcess().startTimeoutWatchThread();
+        }
+    }
+
+    public static void onServiceDead() {
+        Service service = Service.getInstance();
+        for(String key : service.shortTermDataList.keySet()) {
+            ShortTermModel shortTermTransfer = service.shortTermDataList.get(key);
+            shortTermTransfer.getShortTermProcess().stopTimeoutWatchThread();
+        }
+    }
+
     public static Service getInstance() {
         if (instance == null) {
             throw new NullPointerException("Service Instance is not initialized!");
@@ -36,5 +72,9 @@ public class Service {
 
     public Argument getArgument() {
         return argument;
+    }
+
+    public HashMap<String, ShortTermModel> getShortTermDataList() {
+        return shortTermDataList;
     }
 }
