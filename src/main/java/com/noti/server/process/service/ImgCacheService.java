@@ -1,6 +1,8 @@
 package com.noti.server.process.service;
 
+import com.noti.server.process.Service;
 import com.noti.server.process.packet.PacketConst;
+import com.noti.server.process.service.model.ShortTermArgument;
 import com.noti.server.process.service.model.ShortTermProcess;
 import com.noti.server.process.service.model.ShortTermTransfer;
 import io.ktor.server.application.ApplicationCall;
@@ -21,5 +23,10 @@ public class ImgCacheService extends ShortTermTransfer {
     @Override
     public ShortTermProcess getShortTermProcess() {
         return super.getShortTermProcess();
+    }
+
+    @Override
+    public ShortTermArgument getConfigArgument() {
+        return Service.getInstance().getArgument().imageCacheArgument;
     }
 }

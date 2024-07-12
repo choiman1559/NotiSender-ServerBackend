@@ -9,9 +9,14 @@ import java.util.concurrent.*;
 
 public class ShortTermProcess {
 
+    public final ShortTermArgument shortTermArgument;
     public volatile ConcurrentHashMap<String, ConcurrentHashMap<String, ShortTermData>> shortTermDataMap;
     public volatile CopyOnWriteArrayList<String[]> recentShortTermDataStack = new CopyOnWriteArrayList<>();
     private final Thread shortTermDataTimeoutWatchThread = new Thread(this::performLiveObjGC);
+
+    public ShortTermProcess(ShortTermArgument shortTermArgument) {
+        this.shortTermArgument = shortTermArgument;
+    }
 
     public void startTimeoutWatchThread() {
         shortTermDataTimeoutWatchThread.start();
@@ -54,17 +59,19 @@ public class ShortTermProcess {
             ConcurrentHashMap<String, ShortTermData> userMap = shortTermDataMap.get(uid);
             if(userMap.containsKey(dataKey)) {
                 ShortTermData shortTermData = userMap.get(dataKey);
-                userMap.remove(dataKey);
 
-                for(int i = 0; i < recentShortTermDataStack.size(); i++) {
-                    String[] stackObj = recentShortTermDataStack.get(i);
-                    if(stackObj[0].equals(uid) && stackObj[1].equals(dataKey)) {
-                        recentShortTermDataStack.remove(i);
-                        break;
+                if(shortTermArgument.databaseRemoveAfterGet) {
+                    userMap.remove(dataKey);
+
+                    for(int i = 0; i < recentShortTermDataStack.size(); i++) {
+                        String[] stackObj = recentShortTermDataStack.get(i);
+                        if(stackObj[0].equals(uid) && stackObj[1].equals(dataKey)) {
+                            recentShortTermDataStack.remove(i);
+                            break;
+                        }
                     }
+                    shortTermDataMap.put(uid, userMap);
                 }
-
-                shortTermDataMap.put(uid, userMap);
                 return shortTermData;
             }
         }
@@ -84,9 +91,9 @@ public class ShortTermProcess {
             for(String[] stackObj : tempStack) {
                 if(stackObj.length >= 3) {
                     long timestamp = Long.parseLong(stackObj[2]);
-                    if(System.currentTimeMillis() - timestamp >= serviceArgument.liveNotificationDatabaseObjLifeTime) {
+                    if(System.currentTimeMillis() - timestamp >= shortTermArgument.databaseObjLifeTime) {
                         if(serviceArgument.isDebug) {
-                            System.out.printf("Eliminated unused Data: %s\n", Arrays.toString(stackObj));
+                            System.out.printf("Eliminated unused Data: %s\n", Arrays.toString(stackObj) + " Remaining: " + (recentShortTermDataStack.size() - 1));
                         }
 
                         ConcurrentHashMap<String, ShortTermData> userMap = new ConcurrentHashMap<>(shortTermDataMap.get(stackObj[0]));
@@ -98,6 +105,6 @@ public class ShortTermProcess {
                     }
                 }
             }
-        }, 0, serviceArgument.liveNotificationDatabaseGCInterval, TimeUnit.MILLISECONDS);
+        }, 0, shortTermArgument.databaseGCInterval, TimeUnit.MILLISECONDS);
     }
 }

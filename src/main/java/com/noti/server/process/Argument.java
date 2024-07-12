@@ -1,6 +1,7 @@
 package com.noti.server.process;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.noti.server.process.service.model.ShortTermArgument;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +17,11 @@ public class Argument {
     public String host;
     public String matchVersion;
 
-    public long liveNotificationDatabaseGCInterval;
-    public long liveNotificationDatabaseObjLifeTime;
+    public String liveNotiProperties;
+    public String imageCacheProperties;
+
+    public ShortTermArgument liveNotiArgument;
+    public ShortTermArgument imageCacheArgument;
 
     public static Argument buildFrom(List<String> argument) throws IOException, IllegalArgumentException {
         if(argument.isEmpty()) {
@@ -26,13 +30,21 @@ public class Argument {
 
         File file = new File(argument.get(0));
         if(file.exists() && file.canRead()) {
-            Properties fileProps = new Properties();
-            fileProps.load(new FileInputStream(file));
+            Argument argumentObj = (Argument) parsePropertiesFromFile(file.getPath(), Argument.class);
+            argumentObj.liveNotiArgument = (ShortTermArgument) parsePropertiesFromFile(argumentObj.liveNotiProperties, ShortTermArgument.class);
+            argumentObj.imageCacheArgument = (ShortTermArgument) parsePropertiesFromFile(argumentObj.imageCacheProperties, ShortTermArgument.class);
 
-            final ObjectMapper mapper = new ObjectMapper();
-            return mapper.convertValue(fileProps, Argument.class);
+            return argumentObj;
         } else {
             throw new FileNotFoundException("com.noti.server.process.Argument File not found or Not Accessible");
         }
+    }
+
+    private static Object parsePropertiesFromFile(String filePath, Class<?> cls) throws IOException {
+        Properties fileProps = new Properties();
+        fileProps.load(new FileInputStream(filePath));
+
+        final ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(fileProps, cls);
     }
 }

@@ -12,9 +12,15 @@ import java.util.Map;
 
 public abstract class ShortTermTransfer implements ShortTermModel {
     public final ShortTermProcess shortTermProcess;
+    public final ShortTermArgument shortTermArgument;
 
     public ShortTermTransfer() {
-        this.shortTermProcess = new ShortTermProcess();
+        if(getConfigArgument() == null) {
+            throw new IllegalArgumentException("ShortTermArgument must not be null!");
+        }
+
+        this.shortTermArgument = getConfigArgument();
+        this.shortTermProcess = new ShortTermProcess(this.shortTermArgument);
     }
 
     @Override
@@ -25,10 +31,12 @@ public abstract class ShortTermTransfer implements ShortTermModel {
                 shortTermData.timestamp = System.currentTimeMillis();
                 shortTermData.data = (String) argument.get(PacketConst.KEY_EXTRA_DATA);
 
-                shortTermData.targetDevice = Device.fromMap(argument, true);
                 shortTermData.originDevice = Device.fromMap(argument, false);
+                if(shortTermArgument.databaseCheckReceiveDeviceId) {
+                    shortTermData.targetDevice = Device.fromMap(argument, true);
+                }
 
-                if(!shortTermData.originDevice.isEmpty() && !shortTermData.targetDevice.isEmpty()) {
+                if(!shortTermData.originDevice.isEmpty() && !(shortTermArgument.databaseCheckReceiveDeviceId && shortTermData.targetDevice.isEmpty())) {
                     shortTermProcess.onShortTermDataReceived(shortTermData,
                                                              (String) argument.get(PacketConst.KEY_UID), (String) argument.get(PacketConst.KEY_DATA_KEY));
                     Service.replyPacket(call, Packet.makeNormalPacket());
@@ -42,7 +50,8 @@ public abstract class ShortTermTransfer implements ShortTermModel {
                         (String) argument.get(PacketConst.KEY_UID), (String) argument.get(PacketConst.KEY_DATA_KEY));
                 if(shortTermData == null) {
                     Service.replyPacket(call, Packet.makeErrorPacket("No matching Data Available", HttpStatusCode.Companion.getBadRequest()));
-                } else if(!shortTermData.targetDevice.equals(Device.fromMap(argument, false))
+                } else if((shortTermArgument.databaseCheckReceiveDeviceId
+                        && !shortTermData.targetDevice.equals(Device.fromMap(argument, false)))
                         || !shortTermData.originDevice.equals(Device.fromMap(argument, true))) {
                     Service.replyPacket(call, Packet.makeErrorPacket("Device Information is invalid comparing from stored data", HttpStatusCode.Companion.getBadRequest()));
                 } else {
@@ -62,5 +71,10 @@ public abstract class ShortTermTransfer implements ShortTermModel {
     @Override
     public ShortTermProcess getShortTermProcess() {
         return shortTermProcess;
+    }
+
+    @Override
+    public ShortTermArgument getConfigArgument() {
+        return null;
     }
 }
