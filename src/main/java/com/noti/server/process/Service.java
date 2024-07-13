@@ -1,5 +1,6 @@
 package com.noti.server.process;
 
+import com.noti.server.process.auth.FirebaseHelper;
 import com.noti.server.process.packet.Packet;
 import com.noti.server.process.service.ImgCacheService;
 import com.noti.server.process.service.LiveNotificationService;
@@ -42,11 +43,11 @@ public class Service {
         instance = new Service(argument);
 
         try {
+            FirebaseHelper.init(argument.authCredentialPath);
             instance.addShortTermService(ImgCacheService.class);
             instance.addShortTermService(LiveNotificationService.class);
         } catch (Exception e) {
             e.printStackTrace();
-            //ignore exception
         }
     }
 

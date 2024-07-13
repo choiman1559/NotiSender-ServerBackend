@@ -40,7 +40,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
 
-    //implementation("com.kborowy:firebase-auth-provider:1.1.1")
+    implementation("com.google.firebase:firebase-admin:9.3.0")
     implementation("ch.qos.logback:logback-classic:1.4.14")
     implementation("com.mysql:mysql-connector-j:8.4.0")
     implementation("com.zaxxer:HikariCP:5.1.0")

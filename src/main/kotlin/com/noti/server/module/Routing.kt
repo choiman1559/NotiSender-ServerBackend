@@ -14,7 +14,9 @@ import kotlinx.coroutines.runBlocking
 suspend fun doProcessPacket(call: ApplicationCall) {
     if (call.parameters["version"] == "v1") {
         val serviceType: String = call.parameters["service_type"].toString()
-        PacketProcess.processRequest(call, serviceType, call.receiveText())
+        val authentication: String = call.request.header(PacketConst.KEY_AUTHENTICATION).toString()
+
+        PacketProcess.processRequest(call, serviceType, authentication, call.receiveText())
     } else {
         Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_ILLEGAL_ARGUMENT))
     }

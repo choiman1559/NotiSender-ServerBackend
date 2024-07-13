@@ -13,9 +13,12 @@ import java.util.Properties;
 public class Argument {
     public int port;
     public boolean isDebug;
-    public boolean useAuthentication;
     public String host;
     public String matchVersion;
+
+    public boolean useAuthentication;
+    public boolean allowBlankAuthHeader;
+    public String authCredentialPath;
 
     public String liveNotiProperties;
     public String imageCacheProperties;

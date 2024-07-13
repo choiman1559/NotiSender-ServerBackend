@@ -20,6 +20,7 @@ public class PacketConst {
     public final static String ERROR_SERVICE_NOT_IMPLEMENTED = "service_type_not_implemented";
     public final static String ERROR_INTERNAL_ERROR = "server_internal_error";
     public final static String ERROR_ILLEGAL_ARGUMENT = "server_illegal_argument";
+    public final static String ERROR_ILLEGAL_AUTHENTICATION = "server_illegal_authentication";
     public final static String ERROR_FORBIDDEN = "server_forbidden";
 
     public final static String KEY_DEVICE_ID = "device_id";
@@ -27,6 +28,7 @@ public class PacketConst {
     public final static String KEY_SEND_DEVICE_ID = "send_device_id";
     public final static String KEY_SEND_DEVICE_NAME = "send_device_name";
 
+    public final static String KEY_AUTHENTICATION = "Authorization";
     public final static String KEY_ACTION_TYPE = "action_type";
     public final static String KEY_UID = "uid";
     public final static String KEY_DATA_KEY = "data_key";
