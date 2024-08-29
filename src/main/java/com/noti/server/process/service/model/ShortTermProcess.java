@@ -1,6 +1,7 @@
 package com.noti.server.process.service.model;
 
 import com.noti.server.process.Argument;
+import com.noti.server.process.Log;
 import com.noti.server.process.Service;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,12 +10,14 @@ import java.util.concurrent.*;
 
 public class ShortTermProcess {
 
+    private final String LOG_TAG;
     public final ShortTermArgument shortTermArgument;
     public volatile ConcurrentHashMap<String, ConcurrentHashMap<String, ShortTermData>> shortTermDataMap;
     public volatile CopyOnWriteArrayList<String[]> recentShortTermDataStack = new CopyOnWriteArrayList<>();
     private final Thread shortTermDataTimeoutWatchThread = new Thread(this::performLiveObjGC);
 
-    public ShortTermProcess(ShortTermArgument shortTermArgument) {
+    public ShortTermProcess(String LOG_TAG, ShortTermArgument shortTermArgument) {
+        this.LOG_TAG = LOG_TAG;
         this.shortTermArgument = shortTermArgument;
     }
 
@@ -93,7 +96,7 @@ public class ShortTermProcess {
                     long timestamp = Long.parseLong(stackObj[2]);
                     if(System.currentTimeMillis() - timestamp >= shortTermArgument.databaseObjLifeTime) {
                         if(serviceArgument.isDebug) {
-                            System.out.printf("Eliminated unused Data: %s\n", Arrays.toString(stackObj) + " Remaining: " + (recentShortTermDataStack.size() - 1));
+                            Log.print(LOG_TAG, String.format("Eliminated Data: %s\n", Arrays.toString(stackObj) + " Remaining: " + (recentShortTermDataStack.size() - 1)));
                         }
 
                         ConcurrentHashMap<String, ShortTermData> userMap = new ConcurrentHashMap<>(shortTermDataMap.get(stackObj[0]));

@@ -4,6 +4,7 @@ import com.noti.server.process.auth.FirebaseHelper;
 import com.noti.server.process.packet.Packet;
 import com.noti.server.process.service.ImgCacheService;
 import com.noti.server.process.service.LiveNotificationService;
+import com.noti.server.process.service.PacketProxyService;
 import com.noti.server.process.service.model.ShortTermModel;
 
 import io.ktor.http.HttpStatusCode;
@@ -46,6 +47,7 @@ public class Service {
             FirebaseHelper.init(argument.authCredentialPath);
             instance.addShortTermService(ImgCacheService.class);
             instance.addShortTermService(LiveNotificationService.class);
+            instance.addShortTermService(PacketProxyService.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

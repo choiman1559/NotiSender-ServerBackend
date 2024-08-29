@@ -13,12 +13,13 @@ import io.ktor.server.application.ApplicationCall;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class PacketProcess {
     public static void processRequest(ApplicationCall call, String serviceType, @Nullable String idToken, @Nullable String argument) {
         Service service = Service.getInstance();
         if(service.getArgument().isDebug)
-            System.out.println("args:" + argument);
+            Log.print("packetProcess", "RECEIVED " + argument);
 
         Map<String, Object> objectMap = null;
         try {
@@ -31,6 +32,11 @@ public class PacketProcess {
         }
 
         if(objectMap != null) {
+            if(service.getArgument().isDebug)
+                Log.print("PacketProcess", String.format("UID: %s, DEVICE: %s",
+                        Objects.requireNonNullElse(objectMap.get(PacketConst.KEY_UID), "unknown"),
+                        Objects.requireNonNullElse(objectMap.get(PacketConst.KEY_DEVICE_NAME), "empty")));
+
             processAuth: if(service.getArgument().useAuthentication) {
                 if(service.getArgument().allowBlankAuthHeader && (idToken == null || idToken.isEmpty() || idToken.equals("null"))) {
                     break processAuth;

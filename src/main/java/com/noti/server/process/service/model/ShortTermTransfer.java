@@ -20,7 +20,7 @@ public abstract class ShortTermTransfer implements ShortTermModel {
         }
 
         this.shortTermArgument = getConfigArgument();
-        this.shortTermProcess = new ShortTermProcess(this.shortTermArgument);
+        this.shortTermProcess = new ShortTermProcess(getActionTypeName(), this.shortTermArgument);
     }
 
     @Override

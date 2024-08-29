@@ -5,6 +5,7 @@ public class PacketConst {
     public final static String SERVICE_TYPE_UNKNOWN = "type_unknown";
     public final static String SERVICE_TYPE_LIVE_NOTIFICATION = "type_live_notification";
     public final static String SERVICE_TYPE_IMAGE_CACHE = "type_image_cache";
+    public final static String SERVICE_TYPE_PACKET_PROXY = "type_packet_proxy";
     public final static String SERVICE_TYPE_FILE_TRANSFER = "type_file_transfer";
     public final static String SERVICE_TYPE_PING_SERVER = "type_ping";
 
