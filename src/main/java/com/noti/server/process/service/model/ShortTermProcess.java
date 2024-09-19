@@ -96,7 +96,7 @@ public class ShortTermProcess {
                     long timestamp = Long.parseLong(stackObj[2]);
                     if(System.currentTimeMillis() - timestamp >= shortTermArgument.databaseObjLifeTime) {
                         if(serviceArgument.isDebug) {
-                            Log.print(LOG_TAG, String.format("Eliminated Data: %s\n", Arrays.toString(stackObj) + " Remaining: " + (recentShortTermDataStack.size() - 1)));
+                            Log.print(LOG_TAG, String.format("Eliminated Data: %s", Arrays.toString(stackObj) + " Remaining: " + (recentShortTermDataStack.size() - 1)));
                         }
 
                         ConcurrentHashMap<String, ShortTermData> userMap = new ConcurrentHashMap<>(shortTermDataMap.get(stackObj[0]));
