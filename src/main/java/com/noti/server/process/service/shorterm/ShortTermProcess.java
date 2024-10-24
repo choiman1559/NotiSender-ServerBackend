@@ -1,14 +1,15 @@
-package com.noti.server.process.service.model;
+package com.noti.server.process.service.shorterm;
 
 import com.noti.server.process.Argument;
 import com.noti.server.process.Log;
 import com.noti.server.process.Service;
+import com.noti.server.process.service.model.ProcessModel;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.concurrent.*;
 
-public class ShortTermProcess {
+public class ShortTermProcess implements ProcessModel {
 
     private final String LOG_TAG;
     public final ShortTermArgument shortTermArgument;
@@ -21,10 +22,12 @@ public class ShortTermProcess {
         this.shortTermArgument = shortTermArgument;
     }
 
+    @Override
     public void startTimeoutWatchThread() {
         shortTermDataTimeoutWatchThread.start();
     }
 
+    @Override
     public void stopTimeoutWatchThread() {
         if(shortTermDataTimeoutWatchThread.isAlive()) {
             shortTermDataTimeoutWatchThread.interrupt();

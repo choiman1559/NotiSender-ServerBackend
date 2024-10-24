@@ -7,6 +7,7 @@ public class PacketConst {
     public final static String SERVICE_TYPE_IMAGE_CACHE = "type_image_cache";
     public final static String SERVICE_TYPE_PACKET_PROXY = "type_packet_proxy";
     public final static String SERVICE_TYPE_FILE_TRANSFER = "type_file_transfer";
+    public final static String SERVICE_TYPE_FILE_LIST = "type_file_list";
     public final static String SERVICE_TYPE_PING_SERVER = "type_ping";
 
     public final static String REQUEST_POST_SHORT_TERM_DATA = "request_post_short_term_data";

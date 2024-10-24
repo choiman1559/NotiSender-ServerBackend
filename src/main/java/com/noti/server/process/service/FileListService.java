@@ -2,17 +2,17 @@ package com.noti.server.process.service;
 
 import com.noti.server.process.Service;
 import com.noti.server.process.packet.PacketConst;
+import com.noti.server.process.service.longterm.LongTermArgument;
+import com.noti.server.process.service.longterm.LongTermTransfer;
 import com.noti.server.process.service.model.ProcessModel;
-import com.noti.server.process.service.shorterm.ShortTermArgument;
-import com.noti.server.process.service.shorterm.ShortTermTransfer;
 import io.ktor.server.application.ApplicationCall;
 
 import java.util.Map;
 
-public class ImgCacheService extends ShortTermTransfer {
+public class FileListService extends LongTermTransfer {
     @Override
     public String getActionTypeName() {
-        return PacketConst.SERVICE_TYPE_IMAGE_CACHE;
+        return PacketConst.SERVICE_TYPE_FILE_LIST;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class ImgCacheService extends ShortTermTransfer {
     }
 
     @Override
-    public ShortTermArgument getConfigArgument() {
-        return Service.getInstance().getArgument().imageCacheArgument;
+    public LongTermArgument getConfigArgument() {
+        return Service.getInstance().getArgument().fileListArgument;
     }
 }

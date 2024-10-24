@@ -2,9 +2,9 @@ package com.noti.server.process.service;
 
 import com.noti.server.process.Service;
 import com.noti.server.process.packet.PacketConst;
-import com.noti.server.process.service.model.ShortTermArgument;
-import com.noti.server.process.service.model.ShortTermProcess;
-import com.noti.server.process.service.model.ShortTermTransfer;
+import com.noti.server.process.service.model.ProcessModel;
+import com.noti.server.process.service.shorterm.ShortTermArgument;
+import com.noti.server.process.service.shorterm.ShortTermTransfer;
 import io.ktor.server.application.ApplicationCall;
 
 import java.util.Map;
@@ -16,13 +16,13 @@ public class PacketProxyService extends ShortTermTransfer {
     }
 
     @Override
-    public void onShortDataProcess(ApplicationCall call, Map<String, Object> argument) {
-        super.onShortDataProcess(call, argument);
+    public void onDataProcess(ApplicationCall call, Map<String, Object> argument) {
+        super.onDataProcess(call, argument);
     }
 
     @Override
-    public ShortTermProcess getShortTermProcess() {
-        return super.getShortTermProcess();
+    public ProcessModel getProcess() {
+        return super.getProcess();
     }
 
     @Override

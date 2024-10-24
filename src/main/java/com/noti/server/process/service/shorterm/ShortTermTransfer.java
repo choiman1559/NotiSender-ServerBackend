@@ -1,10 +1,11 @@
-package com.noti.server.process.service.model;
+package com.noti.server.process.service.shorterm;
 
 import com.noti.server.process.Service;
 import com.noti.server.process.packet.Device;
 import com.noti.server.process.packet.Packet;
 import com.noti.server.process.packet.PacketConst;
 
+import com.noti.server.process.service.model.ProcessModel;
 import io.ktor.http.HttpStatusCode;
 import io.ktor.server.application.ApplicationCall;
 
@@ -24,7 +25,7 @@ public abstract class ShortTermTransfer implements ShortTermModel {
     }
 
     @Override
-    public void onShortDataProcess(ApplicationCall call, Map<String, Object> argument) {
+    public void onDataProcess(ApplicationCall call, Map<String, Object> argument) {
         switch ((String) argument.get(PacketConst.KEY_ACTION_TYPE)) {
             case PacketConst.REQUEST_POST_SHORT_TERM_DATA -> {
                 ShortTermData shortTermData = new ShortTermData();
@@ -69,7 +70,7 @@ public abstract class ShortTermTransfer implements ShortTermModel {
     }
 
     @Override
-    public ShortTermProcess getShortTermProcess() {
+    public ProcessModel getProcess() {
         return shortTermProcess;
     }
 

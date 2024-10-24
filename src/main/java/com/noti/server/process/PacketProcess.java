@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noti.server.process.auth.FirebaseHelper;
 import com.noti.server.process.packet.Packet;
 import com.noti.server.process.packet.PacketConst;
-import com.noti.server.process.service.model.ShortTermModel;
+import com.noti.server.process.service.model.TransferModel;
 
 import io.ktor.http.HttpStatusCode;
 import io.ktor.server.application.ApplicationCall;
@@ -57,13 +57,12 @@ public class PacketProcess {
                 }
             }
 
-            if(service.getShortTermDataList().containsKey(serviceType)) {
-                ShortTermModel shortTermTransfer = service.getShortTermDataList().get(serviceType);
-                shortTermTransfer.onShortDataProcess(call, objectMap);
+            if(service.getDataTransferServiceList().containsKey(serviceType)) {
+                TransferModel dataTransferService = service.getDataTransferServiceList().get(serviceType);
+                dataTransferService.onDataProcess(call, objectMap);
             } else switch (serviceType) {
                 case PacketConst.SERVICE_TYPE_PING_SERVER -> Service.replyPacket(call, Packet.makeNormalPacket(service.getArgument().matchVersion));
-                case PacketConst.SERVICE_TYPE_FILE_TRANSFER -> //TODO: Noting to do for now;
-                        Packet.makeErrorPacket(PacketConst.ERROR_SERVICE_NOT_IMPLEMENTED);
+                case PacketConst.SERVICE_TYPE_UNKNOWN -> Packet.makeErrorPacket(PacketConst.ERROR_SERVICE_NOT_IMPLEMENTED);
                 default -> Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_SERVICE_NOT_FOUND));
             }
         } else {

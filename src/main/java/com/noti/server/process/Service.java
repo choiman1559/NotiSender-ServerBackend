@@ -2,10 +2,11 @@ package com.noti.server.process;
 
 import com.noti.server.process.auth.FirebaseHelper;
 import com.noti.server.process.packet.Packet;
+import com.noti.server.process.service.FileListService;
 import com.noti.server.process.service.ImgCacheService;
 import com.noti.server.process.service.LiveNotificationService;
 import com.noti.server.process.service.PacketProxyService;
-import com.noti.server.process.service.model.ShortTermModel;
+import com.noti.server.process.service.model.TransferModel;
 
 import io.ktor.http.HttpStatusCode;
 import io.ktor.server.application.ApplicationCall;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 public class Service {
     private static Service instance;
     private final Argument argument;
-    private final HashMap<String, ShortTermModel> shortTermDataList;
+    private final HashMap<String, TransferModel> dataTransferServiceList;
 
     public interface onPacketProcessReplyReceiver {
         void onPacketReply(ApplicationCall call, HttpStatusCode code, String data);
@@ -25,12 +26,12 @@ public class Service {
 
     private Service(Argument argument) {
         this.argument = argument;
-        this.shortTermDataList = new HashMap<>();
+        this.dataTransferServiceList = new HashMap<>();
     }
 
-    private void addShortTermService(Class<?> cls) throws Exception {
-        ShortTermModel shortTermObj = (ShortTermModel) cls.getDeclaredConstructor().newInstance();
-        this.shortTermDataList.put(shortTermObj.getActionTypeName(), shortTermObj);
+    private void addDataTransferService(Class<?> cls) throws Exception {
+        TransferModel dataTransferService = (TransferModel) cls.getDeclaredConstructor().newInstance();
+        this.dataTransferServiceList.put(dataTransferService.getActionTypeName(), dataTransferService);
     }
 
     public static void replyPacket(ApplicationCall call, Packet data) {
@@ -45,9 +46,10 @@ public class Service {
 
         try {
             FirebaseHelper.init(argument.authCredentialPath);
-            instance.addShortTermService(ImgCacheService.class);
-            instance.addShortTermService(LiveNotificationService.class);
-            instance.addShortTermService(PacketProxyService.class);
+            instance.addDataTransferService(ImgCacheService.class);
+            instance.addDataTransferService(LiveNotificationService.class);
+            instance.addDataTransferService(PacketProxyService.class);
+            instance.addDataTransferService(FileListService.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,17 +57,17 @@ public class Service {
 
     public static void onServiceAlive() {
         Service service = Service.getInstance();
-        for (String key : service.shortTermDataList.keySet()) {
-            ShortTermModel shortTermTransfer = service.shortTermDataList.get(key);
-            shortTermTransfer.getShortTermProcess().startTimeoutWatchThread();
+        for (String key : service.dataTransferServiceList.keySet()) {
+            TransferModel transferService = service.dataTransferServiceList.get(key);
+            transferService.getProcess().startTimeoutWatchThread();
         }
     }
 
     public static void onServiceDead() {
         Service service = Service.getInstance();
-        for (String key : service.shortTermDataList.keySet()) {
-            ShortTermModel shortTermTransfer = service.shortTermDataList.get(key);
-            shortTermTransfer.getShortTermProcess().stopTimeoutWatchThread();
+        for (String key : service.dataTransferServiceList.keySet()) {
+            TransferModel transferService = service.dataTransferServiceList.get(key);
+            transferService.getProcess().stopTimeoutWatchThread();
         }
     }
 
@@ -79,7 +81,7 @@ public class Service {
         return argument;
     }
 
-    public HashMap<String, ShortTermModel> getShortTermDataList() {
-        return shortTermDataList;
+    public HashMap<String, TransferModel> getDataTransferServiceList() {
+        return dataTransferServiceList;
     }
 }

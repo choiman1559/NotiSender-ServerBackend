@@ -2,7 +2,7 @@ val kotlinVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.20"
-    id("io.ktor.plugin") version "2.3.12"
+    id("io.ktor.plugin") version "3.0.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
 }
 
@@ -36,6 +36,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
     implementation("io.ktor:ktor-server-websockets-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("io.ktor:ktor-server-call-logging-jvm")
 
     implementation("io.ktor:ktor-serialization-jackson-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
@@ -46,6 +47,5 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
 
-    testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }

@@ -1,7 +1,8 @@
 package com.noti.server.process;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.noti.server.process.service.model.ShortTermArgument;
+import com.noti.server.process.service.longterm.LongTermArgument;
+import com.noti.server.process.service.shorterm.ShortTermArgument;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,9 +23,11 @@ public class Argument {
 
     public String liveNotiProperties;
     public String imageCacheProperties;
+    public String fileListProperties;
 
     public ShortTermArgument liveNotiArgument;
     public ShortTermArgument imageCacheArgument;
+    public LongTermArgument fileListArgument;
 
     public static Argument buildFrom(List<String> argument) throws IOException, IllegalArgumentException {
         if(argument.isEmpty()) {
@@ -36,6 +39,7 @@ public class Argument {
             Argument argumentObj = (Argument) parsePropertiesFromFile(file.getPath(), Argument.class);
             argumentObj.liveNotiArgument = (ShortTermArgument) parsePropertiesFromFile(argumentObj.liveNotiProperties, ShortTermArgument.class);
             argumentObj.imageCacheArgument = (ShortTermArgument) parsePropertiesFromFile(argumentObj.imageCacheProperties, ShortTermArgument.class);
+            argumentObj.fileListArgument = (LongTermArgument) parsePropertiesFromFile(argumentObj.fileListProperties, LongTermArgument.class);
 
             return argumentObj;
         } else {

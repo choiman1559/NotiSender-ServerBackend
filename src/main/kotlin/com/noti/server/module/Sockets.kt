@@ -8,16 +8,18 @@ import io.ktor.server.websocket.*
 import io.ktor.utils.io.*
 import io.ktor.websocket.*
 import java.io.InputStream
-import java.time.Duration
 import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
+@Suppress("unused")
 fun Application.configureSockets() {
     install(WebSockets) {
-        pingPeriod = Duration.ofSeconds(15)
-        timeout = Duration.ofSeconds(15)
+        pingPeriod = 10.toDuration(DurationUnit.SECONDS)
+        timeout = 15.toDuration(DurationUnit.SECONDS)
         maxFrameSize = Long.MAX_VALUE
         masking = false
     }

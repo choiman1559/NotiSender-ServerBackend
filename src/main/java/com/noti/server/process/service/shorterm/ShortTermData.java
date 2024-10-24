@@ -1,4 +1,4 @@
-package com.noti.server.process.service.model;
+package com.noti.server.process.service.shorterm;
 
 import com.noti.server.process.packet.Device;
 
