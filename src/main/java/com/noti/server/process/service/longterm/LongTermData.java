@@ -1,33 +1,49 @@
 package com.noti.server.process.service.longterm;
 
-import com.noti.server.process.Log;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.noti.server.process.utils.IOUtils;
+import com.noti.server.process.utils.Log;
 import com.noti.server.process.packet.Device;
-import kotlinx.io.Buffer;
-import kotlinx.io.BuffersJvmKt;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public class LongTermData {
+    @JsonIgnore
     public static final String TAG = "LongTermData";
 
-    Device originDevice;
-    Device targetDevice;
+    @JsonProperty
+    public Device originDevice;
+    @JsonProperty
+    public Device targetDevice;
 
-    String userName;
-    String tempBuffer;
-    long timestamp;
+    @JsonIgnore
+    public String tempBuffer;
+    @JsonProperty
+    public long timestamp;
 
-    String fileName;
-    String parentDest;
+    @JsonProperty
+    public String userId;
+    @JsonProperty
+    public String fileName;
+    @JsonProperty
+    public String parentDest;
+
+    @SuppressWarnings("unused")
+    public LongTermData() {
+        // Default Constructor for Serializer
+    }
+
+    public LongTermData(String userId) {
+        this.userId = userId;
+    }
 
     public void read() throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        if(isLoaded() && getFile().exists()) {
-            try (Buffer fileBuffer = new Buffer(); FileInputStream fileInputStream = new FileInputStream(getFile())) {
-                BuffersJvmKt.readTo(BuffersJvmKt.transferFrom(fileBuffer, fileInputStream), outputStream, getFile().length());
-                tempBuffer = outputStream.toString();
-            }
+        File destFile = getFile();
+        if(!isLoaded() | destFile.exists()) {
+            tempBuffer = IOUtils.readFrom(destFile);
+        } else {
+            throw new IOException("Both of buffer and file are not-exists! abort read operation...");
         }
     }
 
@@ -36,31 +52,39 @@ public class LongTermData {
             throw new NullPointerException("Buffer is blank, load data first!");
         }
 
-        if(!getFile().exists()) {
-            getFile().createNewFile();
+        File destFile = getFile();
+        if(!destFile.getParentFile().exists() & destFile.mkdirs()) {
+            Log.printDebug(TAG, "User Folder Created: " + userId);
         }
 
-        byte[] dataArray = tempBuffer.getBytes(StandardCharsets.UTF_8);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(dataArray);
-        try (Buffer fileBuffer = new Buffer(); FileOutputStream fileOutputStream = new FileOutputStream(getFile())) {
-            BuffersJvmKt.readTo(BuffersJvmKt.transferFrom(fileBuffer, inputStream), fileOutputStream, dataArray.length);
+        if(IOUtils.createNewFile(destFile)) {
+            Log.printDebug(TAG, "File Created: " + destFile);
         }
+
+        IOUtils.writeTo(destFile, tempBuffer);
     }
 
     public void deletePersist() {
         flushBuffer();
         File baseFile = getFile();
         if (baseFile.exists() & baseFile.delete()) {
-            Log.print(TAG, "Removed file with name: " + fileName);
+            Log.printDebug(TAG, "Removed file with name: " + fileName);
         }
     }
 
+    @JsonIgnore
     public boolean isLoaded() {
         return tempBuffer != null && !tempBuffer.isEmpty();
     }
 
+    @JsonIgnore
+    public boolean isExists() {
+        return isLoaded() || getFile().exists();
+    }
+
+    @JsonIgnore
     public File getFile() {
-        return new File(parentDest, fileName);
+        return new File(parentDest, String.format("/%s/%s", userId, fileName));
     }
 
     public void updateTimeStamp() {

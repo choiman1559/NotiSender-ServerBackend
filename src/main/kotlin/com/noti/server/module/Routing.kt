@@ -1,6 +1,6 @@
 package com.noti.server.module
 
-import com.noti.server.process.Log
+import com.noti.server.process.utils.Log
 import com.noti.server.process.PacketProcess
 import com.noti.server.process.Service
 import com.noti.server.process.packet.Packet
@@ -28,9 +28,7 @@ fun Application.configureRouting() {
     service.mOnPacketProcessReplyReceiver = Service.onPacketProcessReplyReceiver { call, code, data ->
         runBlocking {
             call.respond(code, data)
-            if(service.argument.isDebug) {
-                Log.print("routingProcess", String.format("RESPONSE %s", data))
-            }
+            Log.printDebug("routingProcess", String.format("RESPONSE %s", data))
         }
     }
 

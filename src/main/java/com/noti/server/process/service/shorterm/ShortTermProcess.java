@@ -1,8 +1,6 @@
 package com.noti.server.process.service.shorterm;
 
-import com.noti.server.process.Argument;
-import com.noti.server.process.Log;
-import com.noti.server.process.Service;
+import com.noti.server.process.utils.Log;
 import com.noti.server.process.service.model.ProcessModel;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,18 +87,14 @@ public class ShortTermProcess implements ProcessModel {
     }
 
     private synchronized void performLiveObjGC() {
-        Argument serviceArgument = Service.getInstance().getArgument();
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
         executor.scheduleAtFixedRate(() -> {
             CopyOnWriteArrayList<String[]> tempStack = new CopyOnWriteArrayList<>(recentShortTermDataStack);
             for(String[] stackObj : tempStack) {
                 if(stackObj.length >= 3) {
                     long timestamp = Long.parseLong(stackObj[2]);
                     if(System.currentTimeMillis() - timestamp >= shortTermArgument.databaseObjLifeTime) {
-                        if(serviceArgument.isDebug) {
-                            Log.print(LOG_TAG, String.format("Eliminated Data: %s", Arrays.toString(stackObj) + " Remaining: " + (recentShortTermDataStack.size() - 1)));
-                        }
+                        Log.printDebug(LOG_TAG, String.format("Eliminated Data: %s", Arrays.toString(stackObj) + " Remaining: " + (recentShortTermDataStack.size() - 1)));
 
                         ConcurrentHashMap<String, ShortTermData> userMap = new ConcurrentHashMap<>(shortTermDataMap.get(stackObj[0]));
                         if(userMap.containsKey(stackObj[1])) {

@@ -7,6 +7,7 @@ public class LongTermArgument {
     public boolean databaseExtendExpireWhenCheckout;
     public long fileBufferGCInterval;
     public long databaseGCInterval;
+    public long databaseBackupInterval;
     public long databaseObjLifeTime;
     public String destinationSrcPath;
 }

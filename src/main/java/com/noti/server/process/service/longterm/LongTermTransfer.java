@@ -31,10 +31,9 @@ public abstract class LongTermTransfer implements LongTermModel {
         final String fileName =  (String) argument.get(PacketConst.KEY_DATA_KEY);
 
         switch ((String) argument.get(PacketConst.KEY_ACTION_TYPE)) {
-            case PacketConst.REQUEST_POST_SHORT_TERM_DATA -> {
-                LongTermData longTermData = new LongTermData();
+            case PacketConst.REQUEST_POST_LONG_TERM_DATA -> {
+                LongTermData longTermData = new LongTermData(userId);
                 longTermData.timestamp = System.currentTimeMillis();
-                longTermData.userName = userId;
 
                 longTermData.fileName = fileName;
                 longTermData.parentDest = longTermArgument.destinationSrcPath;
@@ -51,13 +50,16 @@ public abstract class LongTermTransfer implements LongTermModel {
                         Service.replyPacket(call, Packet.makeNormalPacket());
                     } catch (IOException e) {
                         Service.replyPacket(call, Packet.makeErrorPacket("IO Failed while writing to persistent db", HttpStatusCode.Companion.getInternalServerError()));
+                        if(Service.getInstance().getArgument().isDebug) {
+                            e.printStackTrace();
+                        }
                     }
                 } else {
                     Service.replyPacket(call, Packet.makeErrorPacket("Device Information is not available", HttpStatusCode.Companion.getBadRequest()));
                 }
             }
 
-            case PacketConst.REQUEST_GET_SHORT_TERM_DATA -> {
+            case PacketConst.REQUEST_GET_LONG_TERM_DATA -> {
                 try {
                     LongTermData longTermData = longTermProcess.onLongTermDataRequested(userId, fileName);
                     if(longTermData == null) {
@@ -74,6 +76,9 @@ public abstract class LongTermTransfer implements LongTermModel {
                     }
                 } catch (Exception e) {
                     Service.replyPacket(call, Packet.makeErrorPacket("IO Failed while reading from stored db", HttpStatusCode.Companion.getInternalServerError()));
+                    if(Service.getInstance().getArgument().isDebug) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

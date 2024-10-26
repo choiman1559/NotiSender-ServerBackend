@@ -12,6 +12,8 @@ public class PacketConst {
 
     public final static String REQUEST_POST_SHORT_TERM_DATA = "request_post_short_term_data";
     public final static String REQUEST_GET_SHORT_TERM_DATA = "request_get_short_term_data";
+    public final static String REQUEST_POST_LONG_TERM_DATA = "request_post_long_term_data";
+    public final static String REQUEST_GET_LONG_TERM_DATA = "request_get_long_term_data";
 
     public final static String STATUS_ERROR = "error";
     public final static String STATUS_OK = "ok";
