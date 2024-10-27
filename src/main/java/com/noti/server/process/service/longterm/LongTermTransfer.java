@@ -49,13 +49,13 @@ public abstract class LongTermTransfer implements LongTermModel {
                         longTermProcess.onLongTermDataReceived(longTermData, userId);
                         Service.replyPacket(call, Packet.makeNormalPacket());
                     } catch (IOException e) {
-                        Service.replyPacket(call, Packet.makeErrorPacket("IO Failed while writing to persistent db", HttpStatusCode.Companion.getInternalServerError()));
+                        Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_DATA_DB_IO_FAILED_WRITE, HttpStatusCode.Companion.getInternalServerError()));
                         if(Service.getInstance().getArgument().isDebug) {
                             e.printStackTrace();
                         }
                     }
                 } else {
-                    Service.replyPacket(call, Packet.makeErrorPacket("Device Information is not available", HttpStatusCode.Companion.getBadRequest()));
+                    Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_DATA_DEVICE_INFO_NOT_AVAILABLE, HttpStatusCode.Companion.getBadRequest()));
                 }
             }
 
@@ -63,11 +63,11 @@ public abstract class LongTermTransfer implements LongTermModel {
                 try {
                     LongTermData longTermData = longTermProcess.onLongTermDataRequested(userId, fileName);
                     if(longTermData == null) {
-                        Service.replyPacket(call, Packet.makeErrorPacket("No matching Data Available", HttpStatusCode.Companion.getBadRequest()));
+                        Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_DATA_NO_MATCHING_DATA, HttpStatusCode.Companion.getBadRequest()));
                     } else if((longTermArgument.databaseCheckReceiveDeviceId
                             && !longTermData.targetDevice.equals(Device.fromMap(argument, false)))
                             || !longTermData.originDevice.equals(Device.fromMap(argument, true))) {
-                        Service.replyPacket(call, Packet.makeErrorPacket("Device Information is invalid comparing from stored data", HttpStatusCode.Companion.getBadRequest()));
+                        Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_DATA_DEVICE_INFO_NOT_MATCH, HttpStatusCode.Companion.getBadRequest()));
                     } else if(longTermArgument.useWebSocketOnTransfer) {
                         //TODO: Implement socket IO
                         EchoApp.Server.main(new String[0]);
@@ -75,7 +75,7 @@ public abstract class LongTermTransfer implements LongTermModel {
                         Service.replyPacket(call, Packet.makeNormalPacket(longTermData.tempBuffer));
                     }
                 } catch (Exception e) {
-                    Service.replyPacket(call, Packet.makeErrorPacket("IO Failed while reading from stored db", HttpStatusCode.Companion.getInternalServerError()));
+                    Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_DATA_DB_IO_FAILED_READ, HttpStatusCode.Companion.getInternalServerError()));
                     if(Service.getInstance().getArgument().isDebug) {
                         e.printStackTrace();
                     }

@@ -42,7 +42,7 @@ public abstract class ShortTermTransfer implements ShortTermModel {
                                                              (String) argument.get(PacketConst.KEY_UID), (String) argument.get(PacketConst.KEY_DATA_KEY));
                     Service.replyPacket(call, Packet.makeNormalPacket());
                 } else {
-                    Service.replyPacket(call, Packet.makeErrorPacket("Device Information is not available", HttpStatusCode.Companion.getBadRequest()));
+                    Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_DATA_DEVICE_INFO_NOT_AVAILABLE, HttpStatusCode.Companion.getBadRequest()));
                 }
             }
 
@@ -50,11 +50,11 @@ public abstract class ShortTermTransfer implements ShortTermModel {
                 ShortTermData shortTermData = shortTermProcess.onShortTermDataRequested(
                         (String) argument.get(PacketConst.KEY_UID), (String) argument.get(PacketConst.KEY_DATA_KEY));
                 if(shortTermData == null) {
-                    Service.replyPacket(call, Packet.makeErrorPacket("No matching Data Available", HttpStatusCode.Companion.getBadRequest()));
+                    Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_DATA_NO_MATCHING_DATA, HttpStatusCode.Companion.getBadRequest()));
                 } else if((shortTermArgument.databaseCheckReceiveDeviceId
                         && !shortTermData.targetDevice.equals(Device.fromMap(argument, false)))
                         || !shortTermData.originDevice.equals(Device.fromMap(argument, true))) {
-                    Service.replyPacket(call, Packet.makeErrorPacket("Device Information is invalid comparing from stored data", HttpStatusCode.Companion.getBadRequest()));
+                    Service.replyPacket(call, Packet.makeErrorPacket(PacketConst.ERROR_DATA_DEVICE_INFO_NOT_MATCH, HttpStatusCode.Companion.getBadRequest()));
                 } else {
                     Service.replyPacket(call, Packet.makeNormalPacket(shortTermData.data));
                 }

@@ -27,6 +27,12 @@ public class PacketConst {
     public final static String ERROR_ILLEGAL_AUTHENTICATION = "server_illegal_authentication";
     public final static String ERROR_FORBIDDEN = "server_forbidden";
 
+    public final static String ERROR_DATA_NO_MATCHING_DATA = "No matching Data Available";
+    public final static String ERROR_DATA_DEVICE_INFO_NOT_MATCH = "Device Information is invalid comparing from stored data";
+    public final static String ERROR_DATA_DEVICE_INFO_NOT_AVAILABLE = "Device Information is not available";
+    public final static String ERROR_DATA_DB_IO_FAILED_READ = "IO Failed while reading from stored db";
+    public final static String ERROR_DATA_DB_IO_FAILED_WRITE = "IO Failed while writing to persistent db";
+
     public final static String KEY_DEVICE_ID = "device_id";
     public final static String KEY_DEVICE_NAME = "device_name";
     public final static String KEY_SEND_DEVICE_ID = "send_device_id";
